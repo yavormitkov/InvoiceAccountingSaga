@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/Financial.Api.IntegrationTests/Financial.Api.IntegrationTests.csproj" Id="3d6e5f13-1918-4613-9e05-f6ac97c5316f" />
+  <Project Path="src/Financial.Api/Financial.Api.csproj" />
+  <Project Path="src/Gateway.Bff/Gateway.Bff.csproj" />
+  <Project Path="src/Invoicing.Api.IntegrationTests/Invoicing.Api.IntegrationTests.csproj" Id="33a85060-ca70-452b-980f-1ea2f6a0d361" />
+  <Project Path="src/Invoicing.Api/Invoicing.Api.csproj" />
+  <Project Path="src/Portal.BlazorUi/Portal.BlazorUi.csproj" />
+  <Project Path="src/Shared.Events/Shared.Events.csproj" />
+</Solution>

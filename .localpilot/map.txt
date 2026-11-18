@@ -1,0 +1,198 @@
+## WORKSPACE EXECUTIVE SUMMARY (YAML)
+# Generated: 2026-11-17T17:05:36.9685236+02:00
+# Root: C:\projects\InvoiceAccountingSaga
+Architecture:
+  Type: Backend (C#/.NET)
+  Scale: 78 relevant source files
+  Components: 0
+  Controllers: 0
+  Models: 9
+  Services: 0
+---
+- File: src\Financial.Api\Financial.Api.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk.Web'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <Nullable>enable</Nullable>   <ImplicitUsings>en..."
+- File: src\Financial.Api.IntegrationTests\Financial.Api.IntegrationTests.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <ImplicitUsings>enable</ImplicitUsings>   <Nullable>..."
+- File: src\Gateway.Bff\Gateway.Bff.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk.Web'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <Nullable>enable</Nullable>   <ImplicitUsings>en..."
+- File: src\Invoicing.Api\Invoicing.Api.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk.Web'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <Nullable>enable</Nullable>   <ImplicitUsings>en..."
+- File: src\Invoicing.Api.IntegrationTests\Invoicing.Api.IntegrationTests.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <ImplicitUsings>enable</ImplicitUsings>   <Nullable>..."
+- File: src\Portal.BlazorUi\Portal.BlazorUi.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk.BlazorWebAssembly'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <Nullable>enable</Nullable>   <Imp..."
+- File: src\Shared.Events\Shared.Events.csproj
+  Preview: "<Project Sdk='Microsoft.NET.Sdk'>  <PropertyGroup>   <TargetFramework>net10.0</TargetFramework>   <ImplicitUsings>enable</ImplicitUsings>   <Nullable>..."
+- File: docker-compose.override.yaml
+  Preview: "services:  gateway_bff:   environment:    - ASPNETCORE_ENVIRONMENT=Development    - ASPNETCORE_URLS=http://+:8080    - ASPNETCORE_ALLOWEDHOSTS=*  cub_..."
+- File: docker-compose.yaml
+  Preview: "services:  cub_sql_database:   image: mcr.microsoft.com/mssql/server:2022-latest   container_name: cub_sql_database   environment:    - ACCEPT_EULA=Y ..."
+- File: financial-init.sql
+  Preview: "-- Ensure Financial database exists before applying schema objects IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FinancialDb') BEGIN   CREA..."
+- File: init_invoice.sql
+  Preview: "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CubConnectDb') CREATE DATABASE CubConnectDb; "
+- File: InvoiceAccountingSaga.slnx
+  Preview: "<Solution>  <Folder Name='/Solution Items/'>   <File Path='README.md' />  </Folder>  <Project Path='src/Financial.Api.IntegrationTests/Financial.Api.I..."
+- File: invoicing-init.sql
+  Preview: "-- Ensure Invoice database exists before applying schema objects IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'CubConnectDb') BEGIN   CREAT..."
+- File: README.md
+  Preview: "# Invoice Accounting Saga (CUB Connect) An event-driven distributed accounting Proof of Concept (PoC) built on **.NET 10**, **SQL Server 2022**, **Rab..."
+- File: schema.sql
+  Preview: "CREATE TABLE dbo.Bailiffs (   Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,   LicenseNumber VARCHAR(50) NOT NULL,   Name NVARCHAR(100) NOT NULL ); CREATE ..."
+- File: sign.ps1
+  Preview: "$privateKeyPem = Get-Content -Raw -Path 'private.pem' $header = @{ alg = 'RS256'; typ = 'JWT' } $payload = @{ sub = 'rpa-bot-001'; scope = 'invoices:c..."
+- File: .github\copilot-instructions.md
+  Preview: "\# 🏛️ CAPITAL UNION BANK (CUB) - ARCHITECTURAL MANIFESTO \& SYSTEM PROMPT  You are the Principal Cloud-Native FinTech AI Co-Pilot for Capital Union B..."
+- File: src\Financial.Api\appsettings.Development.json
+  Preview: "{  'Logging': {   'LogLevel': {    'Default': 'Information',    'Microsoft.AspNetCore': 'Warning'   }  } } "
+- File: src\Financial.Api\appsettings.json
+  Preview: "{  'Logging': {   'LogLevel': {    'Default': 'Information',    'Microsoft.AspNetCore': 'Warning'   }  },  'AllowedHosts': '*',  'Authentication': {  ..."
+- File: src\Financial.Api\Program.cs
+  Preview: "using Financial.Api.Extensions; var builder = WebApplication.CreateBuilder(args); builder.Services.AddAuthorization(); builder.Services.AddCustomDatab..."
+- File: src\Financial.Api.IntegrationTests\FinancialConcurrencyTests.cs
+  Symbols: [ProcessInvoiceAccounting_ShouldHandleHighConcurrency_AndPreventDuplicateRedelivery, FinancialConcurrencyTests, FinancialConcurrencyTests]
+  Preview: "using Dapper; using Financial.Api.Commands; using MediatR; using Microsoft.AspNetCore.Mvc.Testing; using Microsoft.Data.SqlClient; using Microsoft.Ext..."
+- File: src\Gateway.Bff\appsettings.Development.json
+  Preview: "{  'Logging': {   'LogLevel': {    'Default': 'Information',    'Microsoft.AspNetCore': 'Warning'   }  } } "
+- File: src\Gateway.Bff\appsettings.json
+  Preview: "{  'Logging': {   'LogLevel': {    'Default': 'Information',    'Microsoft.AspNetCore': 'Warning'   }  },  'AllowedHosts': '*',  'ReverseProxy': {   '..."
+- File: src\Gateway.Bff\Program.cs
+  Preview: "using Gateway.Bff.Extensions; var builder = WebApplication.CreateBuilder(args); builder.Services.AddEdgeRateLimiting(builder.Configuration); builder.S..."
+- File: src\Invoicing.Api\appsettings.Development.json
+  Preview: "{  'Logging': {   'LogLevel': {    'Default': 'Information',    'Microsoft.AspNetCore': 'Warning'   }  } } "
+- File: src\Invoicing.Api\appsettings.json
+  Preview: "{  'Logging': {   'LogLevel': {    'Default': 'Information',    'Microsoft.AspNetCore': 'Warning'   }  },  'AllowedHosts': '*',  'Authentication': {  ..."
+- File: src\Invoicing.Api\Program.cs
+  Preview: "using System.IdentityModel.Tokens.Jwt; using System.Reflection; using System.Text.Json; using Invoicing.Api.Extensions; using Microsoft.AspNetCore.Dia..."
+- File: src\Invoicing.Api.IntegrationTests\InvoiceIdempotencyTests.cs
+  Symbols: [InvoiceIdempotencyTests, InvoiceIdempotencyTests, RegisterInvoice_ShouldEnforceIdempotencyAndSingleOutboxEvent_UnderConcurrentCollisions, RsaSecurityKey, HttpRequestMessage, HttpRequestMessage, HttpRequestMessage, GenerateSignedJwt, RegisterInvoice_ShouldRejectForgedOrUnauthorizedTokens]
+  Preview: "using System.IdentityModel.Tokens.Jwt; using System.Net; using System.Net.Http.Headers; using System.Net.Http.Json; using System.Security.Claims; usin..."
+- File: src\Portal.BlazorUi\libman.json
+  Preview: "{  'version': '3.0',  'defaultProvider': 'cdnjs',  'libraries': [] }"
+- File: src\Portal.BlazorUi\Program.cs
+  Preview: "using Microsoft.AspNetCore.Components.Web; using Microsoft.AspNetCore.Components.WebAssembly.Hosting; using Portal.BlazorUi; var builder = WebAssembly..."
+- File: src\Financial.Api\Commands\ProcessInvoiceAccountingCommand.cs
+  Preview: "using System; using MediatR; namespace Financial.Api.Commands; public sealed record ProcessInvoiceAccountingCommand(   Guid InvoiceId,   Guid BailiffI..."
+- File: src\Financial.Api\Commands\ProcessInvoiceAccountingCommandHandler.cs
+  Preview: "using System; using System.Threading; using System.Threading.Tasks; using Dapper; using MediatR; using Microsoft.Data.SqlClient; using Microsoft.Exten..."
+- File: src\Financial.Api\Consumers\InvoiceRegisteredConsumer.cs
+  Symbols: [Consume, InvoiceRegisteredConsumer]
+  Preview: "using Financial.Api.Commands; using MassTransit; using MediatR; using Shared.Events.Events; namespace Financial.Api.Consumers; public sealed class Inv..."
+- File: src\Financial.Api\Data\FinnacialDbContext.cs
+  Symbols: [base, FinancialDbContext, FinancialDbContext]
+  Preview: "using Financial.Api.Models; using Microsoft.EntityFrameworkCore; namespace Financial.Api.Data; public class FinancialDbContext : DbContext {   public ..."
+- File: src\Financial.Api\DTOs\BailiffMonitorResponse.cs
+  Preview: "namespace Financial.Api.DTOs; public sealed record BailiffMonitorResponse(   string LicenseNumber,   string Name,   int TotalInvoices,   decimal Curre..."
+- File: src\Financial.Api\Extensions\FinancialEndpointExtensions.cs
+  Symbols: [MapFinancialEndpoints, FinancialEndpointExtensions]
+  Preview: "using Financial.Api.Queries; using MediatR; using Microsoft.AspNetCore.Builder; using Microsoft.AspNetCore.Http; using Microsoft.AspNetCore.Routing; u..."
+- File: src\Financial.Api\Extensions\InfrastructureExtensions.cs
+  Symbols: [AddCustomDatabase, InfrastructureExtensions]
+  Preview: "using Financial.Api.Data; using Microsoft.EntityFrameworkCore; namespace Financial.Api.Extensions; public static class InfrastructureExtensions {   pu..."
+- File: src\Financial.Api\Extensions\MassTransitExtensions.cs
+  Symbols: [MassTransitExtensions]
+  Preview: "using Financial.Api.Consumers; using MassTransit; namespace Financial.Api.Extensions; public static class MassTransitExtensions {   public static ISer..."
+- File: src\Financial.Api\Extensions\ResilienceExtensions.cs
+  Symbols: [AddDatabaseResilience, ResilienceExtensions]
+  Preview: "using System; using Microsoft.Data.SqlClient; using Microsoft.Extensions.DependencyInjection; using Polly; using Polly.Retry; namespace Financial.Api...."
+- File: src\Financial.Api\Models\Bailiff.cs
+  Symbols: [Bailiff]
+  Preview: "using System; namespace Financial.Api.Models; public class Bailiff {   public Guid Id { get; set; }   public string LicenseNumber { get; set; } = null..."
+- File: src\Financial.Api\Models\RabbitMqOptions.cs
+  Symbols: [RabbitMqOptions]
+  Preview: "namespace Financial.Api.Models; public sealed class RabbitMqOptions {   public const string SectionName = 'RabbitMQ';   public required string Host { ..."
+- File: src\Financial.Api\Models\UserBalance.cs
+  Symbols: [UserBalance]
+  Preview: "namespace Financial.Api.Models; public class UserBalance {   public Guid Id { get; set; }   public Guid UserIdentifier { get; set; }   public int Invo..."
+- File: src\Financial.Api\Properties\launchSettings.json
+  Preview: "{  '$schema': 'https://json.schemastore.org/launchsettings.json',  'profiles': {   'http': {    'commandName': 'Project',    'dotnetRunMessages': true..."
+- File: src\Financial.Api\Queries\GetBailiffMonitorHandler.cs
+  Symbols: [Handle, GetBailiffMonitorHandler]
+  Preview: "using Financial.Api.Data; using Financial.Api.DTOs; using Financial.Api.Models; using MediatR; using Microsoft.EntityFrameworkCore; namespace Financia..."
+- File: src\Financial.Api\Queries\GetBailiffMonitorQuery.cs
+  Preview: "using MediatR; using Financial.Api.DTOs; using System.Collections.Generic; namespace Financial.Api.Queries; public sealed record GetBailiffMonitorQuer..."
+- File: src\Gateway.Bff\Extensions\RateLimitationExtensions.cs
+  Symbols: [RateLimitationExtensions, AddEdgeRateLimiting]
+  Preview: "using System.Threading.RateLimiting; using Gateway.Bff.Models; using Microsoft.AspNetCore.RateLimiting; namespace Gateway.Bff.Extensions; public stati..."
+- File: src\Gateway.Bff\Models\AuthenticationOptions.cs
+  Symbols: [AuthenticationOptions]
+  Preview: "namespace Gateway.Bff.Models; public sealed class AuthenticationOptions {   public bool DemoModeEnabled { get; set; }   public string PrivateKeyPem { ..."
+- File: src\Gateway.Bff\Models\RateLimitingOptions.cs
+  Symbols: [RateLimitingOptions]
+  Preview: "namespace Gateway.Bff.Models; public sealed class RateLimitingOptions {   public const string SectionName = 'RateLimiting';   public int PermitLimit {..."
+- File: src\Gateway.Bff\Properties\launchSettings.json
+  Preview: "{  '$schema': 'https://json.schemastore.org/launchsettings.json',  'profiles': {   'http': {    'commandName': 'Project',    'dotnetRunMessages': true..."
+- File: src\Invoicing.Api\Commands\RegisterInvoiceCommand.cs
+  Preview: "using MediatR; using Invoicing.Api.DTOs; namespace Invoicing.Api.Commands; public sealed record RegisterInvoiceCommand(   string InvoiceNumber,   stri..."
+- File: src\Invoicing.Api\Commands\RegisterInvoiceCommandHandler.cs
+  Symbols: [RegisterInvoiceCommandHandler, Regi]
+  Preview: "using System.Data; using Dapper; using Invoicing.Api.DTOs; using MediatR; using Microsoft.Extensions.Logging; using Polly.Registry; namespace Invoicin..."
+- File: src\Invoicing.Api\Commands\SqlStatements.cs
+  Symbols: [SqlStatements]
+  Preview: "namespace Invoicing.Api.Commands; public static class SqlStatements {   public const string RegisterInvoiceSql = @'     SET XACT_ABORT ON;     SET NOC..."
+- File: src\Invoicing.Api\Data\AuthorizationConstants.cs
+  Symbols: [AuthorizationConstants]
+  Preview: "namespace Invoicing.Api.Data {   public static class AuthorizationConstants   {     public const string InvoicesCreateScope = 'invoices:create';     p..."
+- File: src\Invoicing.Api\DTOs\CreateInvoiceRequest.cs
+  Preview: "namespace Invoicing.Api.DTOs {   public record CreateInvoiceRequest(string InvoiceNumber, string BailiffLicenseNumber, decimal Amount); }"
+- File: src\Invoicing.Api\DTOs\DatabaseInvoiceResult.cs
+  Preview: "using System; namespace Invoicing.Api.DTOs; public record DatabaseInvoiceResult(Guid InvoiceId, Guid BailiffId, InvoiceRegistrationStatus ErrorCode); "
+- File: src\Invoicing.Api\DTOs\InvoiceDetailsResponse.cs
+  Preview: "namespace Invoicing.Api.DTOs; public sealed record InvoiceDetailsResponse(   string InvoiceNumber,   decimal Amount,   DateTime RegisteredAt ); "
+- File: src\Invoicing.Api\DTOs\InvoiceRegistrationStatus.cs
+  Preview: "namespace Invoicing.Api.DTOs; public enum InvoiceRegistrationStatus {   Success = 0,   BailiffNotFound = 1,   DuplicateInvoice = 2,   DatabaseError = ..."
+- File: src\Invoicing.Api\DTOs\RegisterInvoiceResult.cs
+  Preview: "using System; namespace Invoicing.Api.DTOs; public record RegisterInvoiceResult(Guid InvoiceId, bool IsNew, InvoiceRegistrationStatus Status); "
+- File: src\Invoicing.Api\Extensions\AuthenticationExtensions.cs
+  Symbols: [Aut]
+  Preview: "using System.Security.Cryptography; using Invoicing.Api.Data; using Invoicing.Api.Models; using Microsoft.AspNetCore.Authentication.JwtBearer; using M..."
+- File: src\Invoicing.Api\Extensions\DatabaseExtensions.cs
+  Symbols: [DatabaseExtensions]
+  Preview: "using System.Data; using Microsoft.Data.SqlClient; namespace Invoicing.Api.Extensions; public static class DatabaseExtensions {   public static IServi..."
+- File: src\Invoicing.Api\Extensions\EndpointRouteBuilderExtensions.cs
+  Symbols: [EndpointRouteBuilderExtensions, MapInvoiceEndpoints]
+  Preview: "using Invoicing.Api.Commands; using Invoicing.Api.Data; using Invoicing.Api.DTOs; using Invoicing.Api.Queries; using MediatR; using Microsoft.AspNetCo..."
+- File: src\Invoicing.Api\Extensions\MassTransitExtensions.cs
+  Symbols: [MassTransitExtensions, AddInvoicingMassTransit]
+  Preview: "using Invoicing.Api.Models; using MassTransit; namespace Invoicing.Api.Extensions; public static class MassTransitExtensions {   public static IServic..."
+- File: src\Invoicing.Api\Extensions\RateLimitationExtensions.cs
+  Symbols: [AddApiRateLimiting, RateLimitationExtensions]
+  Preview: "using System.Threading.RateLimiting; using Invoicing.Api.Models; using Microsoft.AspNetCore.RateLimiting; namespace Invoicing.Api.Extensions; public s..."
+- File: src\Invoicing.Api\Extensions\ResilienceExtensions.cs
+  Symbols: [AddDatabaseResilience, ResilienceExtensions]
+  Preview: "using System; using Microsoft.Data.SqlClient; using Microsoft.Extensions.DependencyInjection; using Polly; using Polly.Retry; namespace Invoicing.Api...."
+- File: src\Invoicing.Api\Models\AuthenticationOptions.cs
+  Symbols: [AuthenticationOptions]
+  Preview: "namespace Invoicing.Api.Models; public sealed class AuthenticationOptions {   public const string SectionName = 'Authentication';   public string Publ..."
+- File: src\Invoicing.Api\Models\RabbitMqOptions.cs
+  Symbols: [RabbitMqOptions]
+  Preview: "namespace Invoicing.Api.Models; public sealed class RabbitMqOptions {   public const string SectionName = 'RabbitMQ';   public required string Host { ..."
+- File: src\Invoicing.Api\Models\RateLimitingOptions.cs
+  Symbols: [RateLimitingOptions]
+  Preview: "namespace Invoicing.Api.Models; public sealed class RateLimitingOptions {   public const string SectionName = 'RateLimiting';   public int PermitLimit..."
+- File: src\Invoicing.Api\Properties\launchSettings.json
+  Preview: "{  '$schema': 'https://json.schemastore.org/launchsettings.json',  'profiles': {   'http': {    'commandName': 'Project',    'dotnetRunMessages': true..."
+- File: src\Invoicing.Api\Queries\GetInvoicesByLicenseHandler.cs
+  Symbols: [GetInvoicesByLicenseHan]
+  Preview: "using Dapper; using Invoicing.Api.DTOs; using MediatR; using System.Collections.Generic; using System.Data; using System.Threading; using System.Threa..."
+- File: src\Invoicing.Api\Queries\GetInvoicesByLicenseQuery.cs
+  Preview: "using Invoicing.Api.DTOs; using MediatR; using System.Collections.Generic; namespace Invoicing.Api.Queries; public sealed record GetInvoicesByLicenseQ..."
+- File: src\Invoicing.Api\Workers\OutboxRelayWorker.cs
+  Symbols: [DispatchBatchAsync, when, catch, ExecuteAsync, OutboxRelayWorker, using]
+  Preview: "using System.Data; using System.Text.Json; using Dapper; using Invoicing.Api.Commands; using MassTransit; using Microsoft.Data.SqlClient; using Shared..."
+- File: src\Portal.BlazorUi\DTOs\BailiffMonitorResponse.cs
+  Preview: "namespace Portal.BlazorUi.DTOs; public sealed record BailiffMonitorResponse(     string LicenseNumber,     string Name,     int TotalInvoices,     dec..."
+- File: src\Portal.BlazorUi\DTOs\InvoiceDetailsResponse.cs
+  Preview: "namespace Portal.BlazorUi.DTOs; public sealed record InvoiceDetailsResponse(     string InvoiceNumber,     decimal Amount,     DateTime RegisteredAt);"
+- File: src\Portal.BlazorUi\Pages\Home.razor.cs
+  Symbols: [OnInitializedAsync, ClearSelection, SelectBailiffAsync, catch, catch, HomeBase, HomeBase]
+  Preview: "using System.Net.Http.Json; using Microsoft.AspNetCore.Components; using Portal.BlazorUi.DTOs; namespace Portal.BlazorUi.Pages; public partial class H..."
+- File: src\Portal.BlazorUi\Properties\launchSettings.json
+  Preview: "{  '$schema': 'https://json.schemastore.org/launchsettings.json',  'profiles': {   'http': {    'commandName': 'Project',    'dotnetRunMessages': true..."
+- File: src\Shared.Events\Events\InvoiceRegisteredEvent.cs
+  Preview: "using System; namespace Shared.Events.Events; public sealed record InvoiceRegisteredEvent(   Guid InvoiceId,   Guid BailiffId,   decimal Amount ); "
+- File: src\Shared.Events\Models\MessagingConstants.cs
+  Symbols: [MessagingConstants]
+  Preview: "namespace Shared.Events.Models {   public static class MessagingConstants   {     public const string InvoiceRegisteredQueue = 'cub-connect-invoice-re..."
+- File: src\Financial.Api\Commands\Handlers\ProcessInvoiceAccountingCommandHandler.cs
+  Preview: "using System; using System.Data; using System.Threading; using System.Threading.Tasks; using MediatR; using Dapper; using Polly; using Polly.Registry;..."

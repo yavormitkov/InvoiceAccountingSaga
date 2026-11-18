@@ -1,0 +1,115 @@
+﻿@page "/"
+@inherits HomeBase
+
+<PageTitle>CUB Connect | Bailiff Accounting Monitor</PageTitle>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">CUB Connect — Bailiff Ledger Monitor</h2>
+            <small class="text-muted">Real-time distributed accounting &amp; invoice settlement overview</small>
+        </div>
+        @if (!string.IsNullOrEmpty(SelectedLicense))
+        {
+            <button class="btn btn-outline-secondary btn-sm" @onclick="ClearSelection">
+                Clear Selection (@SelectedLicense)
+            </button>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @ErrorMessage
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <strong>Registered Bailiffs &amp; Balances</strong>
+        </div>
+        <div class="card-body p-0">
+            @if (Bailiffs is null)
+            {
+                <div class="p-4 text-muted">Loading bailiff balances...</div>
+            }
+            else if (Bailiffs.Count == 0)
+            {
+                <div class="p-4 text-muted">No bailiff balances recorded yet.</div>
+            }
+            else
+            {
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>License</th>
+                            <th>Bailiff Name</th>
+                            <th class="text-end">Total Invoices</th>
+                            <th class="text-end">Current Balance</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var bailiff in Bailiffs)
+                        {
+                            var isSelected = bailiff.LicenseNumber == SelectedLicense;
+                            <tr class="@(isSelected ? "table-primary" : "")">
+                                <td><code>@bailiff.LicenseNumber</code></td>
+                                <td>@bailiff.Name</td>
+                                <td class="text-end">@bailiff.TotalInvoices</td>
+                                <td class="text-end fw-bold">@bailiff.CurrentBalance.ToString("N2")</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-primary"
+                                            @onclick="() => SelectBailiffAsync(bailiff.LicenseNumber)">
+                                        View Invoices
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(SelectedLicense))
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <strong>Invoices for License: @SelectedLicense</strong>
+            </div>
+            <div class="card-body p-0">
+                @if (Invoices is null)
+                {
+                    <div class="p-4 text-muted">Loading invoices...</div>
+                }
+                else if (Invoices.Count == 0)
+                {
+                    <div class="p-4 text-muted">No invoices found for @SelectedLicense.</div>
+                }
+                else
+                {
+                    <table class="table table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Invoice Number</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-end">Registered At (UTC)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inv in Invoices)
+                            {
+                                <tr>
+                                    <td><code>@inv.InvoiceNumber</code></td>
+                                    <td class="text-end">@inv.Amount.ToString("N2")</td>
+                                    <td class="text-end">@inv.RegisteredAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+</div>

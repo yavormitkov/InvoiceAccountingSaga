@@ -1,0 +1,124 @@
+services:
+  cub_sql_database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: cub_sql_database
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?MSSQL_SA_PASSWORD is required in .env}
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+      - ./invoicing-init.sql:/app/invoicing-init.sql:ro
+      - ./financial-init.sql:/app/financial-init.sql:ro
+    entrypoint: >
+      bash -c "
+      rm -f /tmp/db_initialized &&
+      /opt/mssql/bin/sqlservr &
+      echo 'Waiting for SQL Server engine to accept connections...' &&
+      until /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' >/dev/null 2>&1; do
+        sleep 2;
+      done &&
+      echo 'Executing CubConnectDb (Invoicing) initialization...' &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -i /app/invoicing-init.sql &&
+      echo 'Executing FinancialDb initialization...' &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -i /app/financial-init.sql &&
+      touch /tmp/db_initialized &&
+      echo 'All isolated databases initialized successfully!' &&
+      wait"
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/db_initialized && /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
+    networks:
+      - cub_network
+    restart: unless-stopped
+
+  cub_rabbitmq:
+    image: rabbitmq:3-management
+    container_name: cub_rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - cub_network
+    restart: unless-stopped
+
+  cub_invoicing_api:
+    build:
+      context: .
+      dockerfile: src/Invoicing.Api/Dockerfile
+    container_name: cub_invoicing_api
+    ports:
+      - "5021:8080"
+    depends_on:
+      cub_sql_database:
+        condition: service_healthy
+      cub_rabbitmq:
+        condition: service_healthy
+    networks:
+      - cub_network
+    restart: unless-stopped
+
+  cub_financial_api:
+    build:
+      context: .
+      dockerfile: src/Financial.Api/Dockerfile
+    container_name: cub_financial_api
+    ports:
+      - "5031:8080"
+    depends_on:
+      cub_sql_database:
+        condition: service_healthy
+      cub_rabbitmq:
+        condition: service_healthy
+    networks:
+      - cub_network
+    restart: unless-stopped
+
+  cub_portal_ui:
+    build:
+      context: .
+      dockerfile: src/Portal.BlazorUi/Dockerfile
+    container_name: cub_portal_ui
+    networks:
+      - cub_network
+    restart: unless-stopped
+
+  gateway_bff:
+    build:
+      context: .
+      dockerfile: src/Gateway.Bff/Dockerfile
+    container_name: gateway_bff
+    ports:
+      - "5000:8080"
+    depends_on:
+      - cub_invoicing_api
+      - cub_financial_api
+      - cub_portal_ui
+    networks:
+      - cub_network
+    restart: unless-stopped
+
+volumes:
+  mssql-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
+
+networks:
+  cub_network:
+    driver: bridge
