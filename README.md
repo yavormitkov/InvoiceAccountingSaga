@@ -25,49 +25,8 @@ An event-driven distributed accounting Proof of Concept (PoC) built on **.NET 10
 
 ## System Topology & Dataflow
 
-```text
-[RPA Banking Bots] ---> POST /api/invoices (Bearer RS256 JWT)
-                              |
-[Auditor Browser]  ---> GET / & /api/financial/*
-                              |
-                              v
-                  +-----------------------+
+<img width="8192" height="1032" alt="invoice-diagram" src="https://github.com/user-attachments/assets/bbd3bb13-3c1a-4cbd-8480-9ade28bc7635" />
 
-                  |     Gateway.Bff       |  (YARP Reverse Proxy :5000)
-                  | Sliding Window Limit  |  (300 req / 10s -> HTTP 429)
-                  +-----------------------+
-
-                     |        |        |
-        +------------+        |        +------------+
-        v                     v                     v
-+---------------+   +-------------------+   +---------------+
-
-| cub_portal_ui |   | cub_invoicing_api |   |cub_financial_ |
-| (Blazor WASM  |   | (Dapper + Polly + |   |     api       |
-|  nginx:alpine)|   | OutboxRelayWorker)|   |(Dapper/EF Core|
-+---------------+   +-------------------+   +---------------+
-                              |                     ^
-                   1-Round-Trip T-SQL               |
-                   (Invoices + Outbox)       InvoiceRegisteredEvent
-
-                              |                     |
-                              v                     |
-                    +-------------------+   +---------------+
-
-                    |   CubConnectDb    |   |  cub_rabbitmq |
-                    | (SQL Server 2022) |   | (MassTransit) |
-                    +-------------------+   +---------------+
-                                                    |
-                                                    v
-                                            +---------------+
-
-                                            |  FinancialDb  |
-                                            |(ProcessedInvs |
-                                            | +UserBalances)|
-                                            +---------------+
-```
-
----
 
 ## Concurrency, Idempotency & Resilience Mechanics
 
